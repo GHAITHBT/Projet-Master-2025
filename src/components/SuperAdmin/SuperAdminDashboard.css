@@ -1,0 +1,960 @@
+/* Base Styles & Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+ }
+ 
+ :root {
+  --primary-color: #3498db; /* University Primary Blue */
+  --secondary-color: #2c3e50; /* University Secondary Dark */
+  --success-color: #2ecc71;
+  --danger-color: #e74c3c;
+  --warning-color: #f39c12;
+  --info-color: #1abc9c;
+  --light-color: #f5f5f5;
+  --dark-color: #333;
+  --border-color: #ddd;
+  --text-color: #333;
+  --text-secondary: #666;
+  --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+ }
+ 
+ body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* University Font */
+  background-color: #f8f9fa; /* Lighter background */
+  color: var(--text-color);
+  line-height: 1.6;
+ }
+ 
+ button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+ }
+ 
+ /* Dashboard Layout */
+ .dashboard-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+ }
+ 
+ /* Top Navigation (Adjusted to match university header) */
+ .top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem; /* Matches university header padding */
+  background-color: var(--secondary-color); /* University Header Background */
+  color: white; /* White text for dark background */
+  box-shadow: var(--shadow); /* University Shadow */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-radius: 0; /* No border radius on top nav */
+ }
+ 
+ .logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1.75rem; /* Slightly larger font */
+  color: white; /* White color for logo */
+ }
+ 
+ .nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+ }
+ 
+ /* User Profile (Adjusted for University Header Style) */
+ .user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem; /* Adjusted padding */
+  background-color: transparent; /* Transparent background */
+  color: white; /* White text */
+  border-radius: 4px; /* Smaller border radius */
+  cursor: pointer;
+  transition: var(--transition); /* Use university transition var */
+ }
+ 
+ .user-profile:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
+ }
+ 
+ .avatar {
+  width: 40px; /* University avatar size */
+  height: 40px; /* University avatar size */
+  background-color: var(--primary-color); /* University Primary Blue */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem; /* Larger font for initial */
+  font-weight: bold;
+ }
+ 
+ .username {
+  font-weight: 500;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: white; /* White username */
+ }
+ 
+ /* Feedback Button (Styled as a standard button) */
+ .feedback-btn {
+  display: inline-flex; /* Use flex for icon+text */
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem; /* Adjusted padding */
+  background-color: var(--primary-color); /* Primary button color */
+  color: white; /* White text */
+  border-radius: 4px; /* Smaller border radius */
+  font-weight: 500;
+  transition: var(--transition); /* Use university transition var */
+ }
+ 
+ .feedback-btn:hover {
+  background-color: #2980b9; /* Darker shade on hover */
+ }
+ 
+ /* Logout Button (Styled as a standard button) */
+ .logout-btn {
+  display: inline-flex; /* Use flex for icon */
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem; /* Adjusted padding */
+  background-color: var(--danger-color); /* Danger button color */
+  color: white; /* White text */
+  border-radius: 4px; /* Smaller border radius */
+  transition: var(--transition); /* Use university transition var */
+ }
+ 
+ .logout-btn:hover {
+  background-color: #c0392b; /* Darker shade on hover */
+ }
+ 
+ 
+ /* User Info Dropdown (Position adjusted relative to .user-info) */
+ .user-info-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem); /* Position below user-profile */
+  right: 0;
+  width: 250px; /* University dropdown width */
+  background-color: white;
+  border-radius: 4px; /* Smaller border radius */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* University Shadow */
+  padding: 1rem;
+  z-index: 100; /* High z-index */
+ }
+ 
+ .user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem; /* Added margin */
+ }
+ 
+ .user-details p {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5rem 0;
+  font-size: 0.9rem; /* Smaller font size */
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+ }
+ 
+ .user-details p:last-child {
+  border-bottom: none;
+ }
+ 
+ .user-details strong { /* Match university details style */
+  font-weight: 500;
+  color: var(--text-secondary);
+ }
+ 
+ 
+ /* Toast Message */
+ .toast-message {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 1rem 1.5rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+ }
+ 
+ .toast-message.success {
+  border-left: 4px solid var(--success-color); /* University Success Color */
+ }
+ 
+ .toast-message.error {
+  border-left: 4px solid var(--danger-color); /* University Danger Color */
+ }
+ 
+ /* Dashboard Content */
+ .dashboard-content {
+  flex: 1; /* Allow content to grow */
+  padding: 2rem; /* University padding */
+  max-width: 1400px; /* University max width */
+  margin: 0 auto; /* Center content */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* University gap */
+ }
+ 
+ /* Welcome Card (Adjusted) */
+ .welcome-card {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); /* University colors */
+  color: white;
+  border-radius: 8px; /* Smaller border radius */
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow); /* University Shadow */
+ }
+ 
+ .welcome-text h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+ }
+ 
+ .welcome-text p {
+  opacity: 0.9;
+ }
+ 
+ .score-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ }
+ 
+ .score-circle {
+  width: 5rem;
+  height: 5rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+ }
+ 
+ .score-circle span {
+  font-size: 1.75rem;
+  font-weight: 700;
+ }
+ 
+ /* Tab Navigation (Adjusted to university tab style) */
+ .tab-navigation {
+  display: flex;
+  margin-bottom: 2rem; /* University margin */
+  border-bottom: 1px solid var(--border-color); /* University border */
+  background-color: transparent; /* No background */
+  padding: 0; /* No padding */
+  border-radius: 0; /* No border radius */
+  gap: 0; /* Remove gap */
+ }
+ 
+ .tab-btn {
+  flex: unset; /* Unset flex grow */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem; /* University padding */
+  background-color: transparent;
+  color: var(--text-secondary); /* University text secondary */
+  border-radius: 0; /* No border radius */
+  font-weight: 500;
+  transition: var(--transition); /* Use university transition var */
+  position: relative;
+ }
+ 
+ .tab-btn:hover {
+  background-color: transparent; /* No background change on hover */
+  color: var(--primary-color); /* Primary color on hover */
+ }
+ 
+ .tab-btn.active {
+  background-color: transparent; /* No background change when active */
+  color: var(--primary-color); /* Primary color when active */
+ }
+ 
+ .tab-btn.active::after { /* University active tab indicator */
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--primary-color);
+ }
+ 
+ 
+ /* Card Styles (Adjusted) */
+ .card {
+  background-color: white;
+  border-radius: 8px; /* Smaller border radius */
+  padding: 1.5rem;
+  box-shadow: var(--shadow); /* University Shadow */
+  margin-bottom: 2rem; /* Added margin-bottom for spacing */
+ }
+ 
+ .card h3 { /* Styled as card-title */
+  font-size: 1.4rem; /* University card title size */
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0; /* Remove padding-bottom */
+  color: var(--secondary-color); /* University secondary color */
+  font-weight: 600;
+ }
+ 
+ .card h3:after { /* Remove the underline effect */
+  content: none;
+ }
+ 
+ /* Marks Card */
+ .speciality-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  background-color: #f0f9ff; /* Keep a light blue background */
+  color: #0369a1; /* Keep a dark blue text */
+  border-radius: 20px; /* Keep rounded badge */
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+ }
+ 
+ .marks-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+ }
+ 
+ /* Form Group Styles (Adjusted) */
+ .form-group {
+  margin-bottom: 0; /* Remove margin-bottom, spacing handled by grid/flex gap */
+  display: flex; /* Added flex for label and input */
+  flex-direction: column;
+ }
+ 
+ .form-group label { /* Styled as form-label */
+  display: block;
+  font-size: 0.9rem; /* University font size */
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary); /* University text secondary */
+ }
+ 
+ .form-group input { /* Styled as form-input */
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color); /* University border */
+  border-radius: 4px; /* Smaller border radius */
+  font-size: 1rem;
+  transition: var(--transition); /* Use university transition var */
+ }
+ 
+ .form-group input:focus { /* University focus style */
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+ }
+ 
+ .form-group textarea { /* Styled as form-textarea */
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color); /* University border */
+  border-radius: 4px; /* Smaller border radius */
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 100px; /* Adjusted min-height */
+  transition: var(--transition); /* Use university transition var */
+ }
+ 
+ .form-group textarea:focus { /* University focus style */
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+ }
+ 
+ /* Update Button (Styled as a primary button) */
+ .update-btn {
+  grid-column: 1 / -1;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color); /* Primary button color */
+  color: white;
+  border-radius: 4px; /* Smaller border radius */
+  font-weight: 500;
+  transition: var(--transition); /* Use university transition var */
+  display: inline-flex; /* Use flex for icon+text */
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem; /* Added margin top */
+ }
+ 
+ .update-btn:hover {
+  background-color: #2980b9; /* Darker shade on hover */
+  transform: none; /* Remove translateY animation */
+ }
+ 
+ /* Masters Section */
+ .speciality-note {
+  color: var(--text-secondary); /* University text secondary */
+  font-size: 0.9rem; /* University font size */
+  margin-bottom: 1.5rem;
+ }
+ 
+ .masters-list { /* Styled similar to program-list */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* University gap */
+  list-style: none; /* Ensure no list style */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+ }
+ 
+ .master-item { /* Styled similar to program-item */
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+  background-color: white; /* White background */
+  border-radius: 8px; /* Smaller border radius */
+  transition: var(--transition); /* Use university transition var */
+  border: 1px solid var(--border-color); /* University border */
+ }
+ 
+ .master-item:hover {
+  background-color: #f8f9fa; /* Subtle background change on hover */
+  transform: none; /* Remove translateY animation */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* University Shadow on hover */
+ }
+ 
+ .master-content {
+  flex: 1;
+ }
+ 
+ .master-content h4 {
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+  color: var(--secondary-color); /* University secondary color */
+ }
+ 
+ .master-content p {
+  color: var(--text-secondary); /* University text secondary */
+  margin-bottom: 0.75rem;
+ }
+ 
+ .master-meta {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping */
+  gap: 0.75rem;
+ }
+ 
+ .meta-item {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #f3f4f6;
+  border-radius: 4px; /* Smaller border radius */
+  font-size: 0.75rem;
+  color: var(--text-secondary); /* University text secondary */
+ }
+
+ .application-period {
+   background-color: #e0f7fa;
+   color: #006064;
+ }
+ 
+ /* Apply Button (Styled as a success button) */
+ .apply-btn {
+  align-self: center;
+  padding: 0.75rem 1.5rem; /* University button padding */
+  background-color: var(--success-color); /* Success button color */
+  color: white;
+  border-radius: 4px; /* Smaller border radius */
+  font-weight: 500;
+  transition: var(--transition); /* Use university transition var */
+  display: inline-flex; /* Use flex for content */
+  align-items: center;
+  justify-content: center;
+ }
+ 
+ .apply-btn:hover {
+  background-color: #27ae60; /* Darker shade on hover */
+  transform: none; /* Remove scale animation */
+ }
+
+ .applied-status {
+   align-self: center;
+   padding: 0.75rem 1.5rem;
+   background-color: #a5d6a7;
+   color: #1b5e20;
+   border-radius: 4px;
+   font-weight: 500;
+   font-size: 0.875rem;
+ }
+
+ .closed-status {
+   align-self: center;
+   padding: 0.75rem 1.5rem;
+   background-color: #ef5350;
+   color: white;
+   border-radius: 4px;
+   font-weight: 500;
+   font-size: 0.875rem;
+ }
+ 
+ .no-masters { /* Styled as empty-state */
+  padding: 2.5rem; /* University padding */
+  text-align: center;
+  color: var(--text-secondary); /* University text secondary */
+  background-color: #f8f9fa; /* University background color */
+  border-radius: 4px; /* Smaller border radius */
+  font-size: 1.1rem; /* University font size */
+ }
+
+ /* Applications Section */
+ .applications-list {
+   display: flex;
+   flex-direction: column;
+   gap: 1rem;
+   list-style: none;
+   padding: 0;
+   margin: 0;
+ }
+
+ .application-item {
+   display: flex;
+   justify-content: space-between;
+   gap: 1rem;
+   padding: 1.25rem;
+   background-color: white;
+   border-radius: 8px;
+   transition: var(--transition);
+   border: 1px solid var(--border-color);
+ }
+
+ .application-item:hover {
+   background-color: #f8f9fa;
+   transform: none;
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+ }
+
+ .application-content {
+   flex: 1;
+ }
+
+ .application-content h4 {
+   font-size: 1.125rem;
+   margin-bottom: 0.5rem;
+   color: var(--secondary-color);
+ }
+
+ .application-content p {
+   color: var(--text-secondary);
+   margin-bottom: 0.75rem;
+ }
+
+ .application-meta {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 0.75rem;
+ }
+
+ .application-meta .meta-item {
+   display: inline-block;
+   padding: 0.25rem 0.5rem;
+   background-color: #f3f4f6;
+   border-radius: 4px;
+   font-size: 0.75rem;
+   color: var(--text-secondary);
+ }
+
+ .application-meta .status-pending {
+   background-color: #fff9c4;
+   color: #f57f17;
+ }
+
+ .application-meta .status-accepted {
+   background-color: #a5d6a7;
+   color: #1b5e20;
+ }
+
+ .application-meta .status-rejected {
+   background-color: #ef5350;
+   color: white;
+ }
+
+ .no-applications {
+   padding: 2.5rem;
+   text-align: center;
+   color: var(--text-secondary);
+   background-color: #f8f9fa;
+   border-radius: 4px;
+   font-size: 1.1rem;
+ }
+ 
+ /* Feedback Modal */
+ .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+ }
+ 
+ .feedback-modal {
+  width: 95%;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 8px; /* Smaller border radius */
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow for modal */
+ }
+ 
+ .modal-header {
+  padding: 1.25rem 1.5rem; /* Adjusted padding */
+  background-color: #f8f9fa; /* University light background */
+  border-bottom: 1px solid var(--border-color); /* University border */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+ }
+ 
+ .modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--secondary-color); /* University secondary color */
+  margin-bottom: 0; /* Remove margin */
+ }
+ 
+ .close-btn {
+  background: transparent;
+  color: var(--text-secondary); /* University text secondary */
+  transition: var(--transition); /* Use university transition var */
+  padding: 0.5rem; /* Added padding */
+  border-radius: 4px; /* Smaller border radius */
+ }
+ 
+ .close-btn:hover {
+  color: var(--dark-color); /* Darker color on hover */
+  background-color: rgba(0, 0, 0, 0.05); /* Subtle hover background */
+ }
+ 
+ .modal-body {
+  padding: 1.5rem;
+ }
+ 
+ .modal-footer {
+  padding: 1.25rem 1.5rem; /* Adjusted padding */
+  background-color: #f8f9fa; /* University light background */
+  border-top: 1px solid var(--border-color); /* University border */
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+ }
+ 
+ /* Cancel Button (Styled as a secondary button look) */
+ .cancel-btn {
+  padding: 0.75rem 1.25rem;
+  background-color: #e9ecef; /* Light gray background */
+  color: var(--dark-color); /* Dark text */
+  border-radius: 4px; /* Smaller border radius */
+  font-weight: 500;
+  transition: var(--transition); /* Use university transition var */
+ }
+ 
+ .cancel-btn:hover {
+  background-color: #dee2e6; /* Darker gray on hover */
+ }
+ 
+ /* Submit Button (Styled as a primary button) */
+ .submit-btn {
+  padding: 0.75rem 1.25rem;
+  background-color: var(--primary-color); /* Primary button color */
+  color: white;
+  border-radius: 4px; /* Smaller border radius */
+  font-weight: 500;
+  transition: var(--transition); /* Use university transition var */
+  display: inline-flex; /* Use flex for icon+text */
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+ }
+ 
+ .submit-btn:hover {
+  background-color: #2980b9; /* Darker shade on hover */
+ }
+ 
+ .submit-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+ }
+ 
+ 
+ /* Loading Spinner (University style) */
+ .loading-container {
+  display: flex;
+  flex-direction: column; /* Stack spinner and text */
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
+  min-height: 80vh; /* Take up most of the viewport height */
+  padding: 2rem;
+ }
+ 
+ .spinner {
+  width: 50px; /* Slightly larger spinner */
+  height: 50px; /* Slightly larger spinner */
+  border: 5px solid rgba(0, 0, 0, 0.1); /* Thicker, lighter border */
+  border-radius: 50%;
+  border-top-color: var(--primary-color); /* University Primary Color */
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 1rem; /* Space between spinner and text */
+ }
+ 
+ @keyframes spin {
+  to {
+   transform: rotate(360deg);
+  }
+ }
+ 
+ .loading-container p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+ }
+ 
+ /* Rating Selector (for Feedback Modal) */
+ .rating-selector {
+  display: flex;
+  gap: 0.5rem;
+ }
+ 
+ .rating-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: var(--transition);
+ }
+ 
+ .rating-btn:hover {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+ }
+ 
+ .rating-btn.active {
+  background-color: var(--warning-color); /* Use warning color for rating */
+  color: white;
+  border-color: var(--warning-color);
+ }
+ 
+ /* Responsive Adjustments */
+ @media (max-width: 768px) {
+  .top-nav {
+   flex-direction: column;
+   gap: 1rem;
+   padding: 1rem;
+  }
+ 
+  .nav-actions {
+   width: 100%;
+   justify-content: center;
+  }
+ 
+  .user-info-dropdown {
+   top: initial;
+   right: 1rem;
+   left: 1rem;
+   width: auto;
+   margin-top: 1rem;
+  }
+ 
+  .dashboard-content {
+   padding: 1rem;
+   gap: 1rem;
+  }
+ 
+  .welcome-card {
+   flex-direction: column;
+   text-align: center;
+   gap: 1.5rem;
+  }
+ 
+  .tab-navigation {
+   flex-wrap: wrap;
+   justify-content: center;
+  }
+ 
+  .tab-btn {
+   flex-grow: 1;
+   text-align: center;
+   padding: 0.75rem;
+  }
+ 
+  .marks-form {
+   grid-template-columns: 1fr;
+  }
+ 
+  .master-item {
+   flex-direction: column;
+   align-items: flex-start;
+   gap: 0.75rem;
+  }
+ 
+  .apply-btn, .applied-status, .closed-status {
+   align-self: stretch; /* Make apply button full width */
+  }
+
+  .application-item {
+   flex-direction: column;
+   align-items: flex-start;
+   gap: 0.75rem;
+  }
+ 
+  .modal-footer {
+   flex-direction: column;
+   gap: 0.75rem;
+  }
+ 
+  .cancel-btn, .submit-btn {
+   width: 100%;
+   justify-content: center;
+  }
+ }.feedback-card {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.feedback-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1rem;
+  background: #f9f9f9;
+}
+
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-subject {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.feedback-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.feedback-user,
+.feedback-date {
+  font-style: italic;
+}
+
+.feedback-content {
+  margin-top: 0.5rem;
+}
+
+.feedback-message {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-rating {
+  font-size: 1rem;
+  color: #f39c12;
+}
+
+/* University Item Styling (Remove Blue Background) */
+.university-item {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1rem;
+  background-color: white; /* White background to match screenshot */
+  color: var(--text-color); /* Default text color */
+}
+
+/* Ensure nested elements inside university-item use default text colors */
+.university-item .university-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--secondary-color); /* Dark color for university name */
+}
+
+.university-item .university-email {
+  font-size: 0.9rem;
+  color: var(--text-secondary); /* Lighter secondary color for email */
+}
+
+/* Master Program Item Styling (Remove Red Background) */
+.master-program-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: white; /* White background to match screenshot */
+  color: var(--text-color); /* Default text color */
+}
+
+/* Ensure nested elements inside master-program-item use default text colors */
+.master-program-item .master-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--secondary-color); /* Dark color for master program name */
+}
+
+.master-program-item .master-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary); /* Lighter secondary color for description */
+}
+
+.master-program-item .master-details p {
+  font-size: 0.9rem;
+  color: var(--text-secondary); /* Lighter secondary color for details */
+}
+
+.master-program-item .highlight {
+  font-weight: 500;
+  color: var(--text-color); /* Default text color for highlighted values */
+}
