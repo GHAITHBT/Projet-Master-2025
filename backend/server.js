@@ -23,7 +23,7 @@ const dbPool = mysql.createPool({
 // File upload configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadDir = './uploads/transcripts';
+        const uploadDir = './Uploads/transcripts';
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
@@ -31,10 +31,10 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         if (!file || !file.originalname) {
-            return cb(new Error('File or file.originalname is missing'), null);
+            return cb(new Error('Le fichier ou le nom du fichier original est manquant'), null);
         }
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, `transcript-${req.body.studentId}-${uniqueSuffix}${path.extname(file.originalname)}`);
+        cb(null, `releve-${req.body.studentId}-${uniqueSuffix}${path.extname(file.originalname)}`);
     }
 });
 
@@ -42,12 +42,12 @@ const upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
         if (!file) {
-            return cb(new Error('No file provided'), false);
+            return cb(new Error('Aucun fichier fourni'), false);
         }
         if (file.mimetype === 'application/pdf') {
             cb(null, true);
         } else {
-            cb(new Error('Only PDF files are allowed'), false);
+            cb(new Error('Seuls les fichiers PDF sont autorisés'), false);
         }
     },
     limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
@@ -56,8 +56,8 @@ const upload = multer({
 // Standard email content
 const GMAIL_USER = 'your_email@gmail.com'; // Replace with your Gmail
 const GMAIL_PASS = 'your_app_password'; // Replace with your Gmail App Password
-const STANDARD_SUBJECT = 'Automated Notification';
-const STANDARD_BODY = 'This is an automatically generated email. Thank you for using our service!';
+const STANDARD_SUBJECT = 'Notification Automatisée';
+const STANDARD_BODY = 'Ceci est un courriel généré automatiquement. Merci d’utiliser notre service !';
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
@@ -79,7 +79,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
 app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {
         if (err.code === 'LIMIT_FILE_SIZE') {
-            return res.status(400).json({ message: 'File is too large. Maximum size allowed is 10MB.' });
+            return res.status(400).json({ message: 'Le fichier est trop volumineux. La taille maximale autorisée est de 10 Mo.' });
         }
         return res.status(400).json({ message: err.message });
     } else if (err) {
@@ -99,7 +99,7 @@ function calculateScore(firstYear, secondYear, thirdYear) {
 app.post('/api/register', async (req, res) => {
     const { email, password, speciality, name } = req.body;
     if (!email || !password || !speciality || !name) {
-        return res.status(400).json({ message: 'Email, password, speciality, and name are required' });
+        return res.status(400).json({ message: 'L’email, le mot de passe, la spécialité et le nom sont requis' });
     }
 
     try {
@@ -114,13 +114,13 @@ app.post('/api/register', async (req, res) => {
             [userId, speciality]
         );
 
-        res.status(201).json({ message: 'User registered successfully', userId });
+        res.status(201).json({ message: 'Utilisateur inscrit avec succès', userId });
     } catch (error) {
-        console.error('Registration error:', error);
+        console.error('Erreur d’inscription:', error);
         if (error.code === 'ER_DUP_ENTRY') {
-            res.status(409).json({ message: 'Email already exists' });
+            res.status(409).json({ message: 'Cet email existe déjà' });
         } else {
-            res.status(500).json({ message: 'Server error during registration' });
+            res.status(500).json({ message: 'Erreur du serveur lors de l’inscription' });
         }
     }
 });
@@ -129,7 +129,7 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        return res.status(400).json({ message: 'Email and password are required' });
+        return res.status(400).json({ message: 'L’email et le mot de passe sont requis' });
     }
 
     try {
@@ -140,13 +140,13 @@ app.post('/api/login', async (req, res) => {
 
         if (users.length > 0) {
             const user = users[0];
-            res.status(200).json({ message: 'Login successful', user });
+            res.status(200).json({ message: 'Connexion réussie', user });
         } else {
-            res.status(401).json({ message: 'Invalid credentials' });
+            res.status(401).json({ message: 'Identifiants invalides' });
         }
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error during login' });
+        console.error('Erreur de connexion:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la connexion' });
     }
 });
 
@@ -154,7 +154,7 @@ app.post('/api/login', async (req, res) => {
 app.post('/api/student/data', async (req, res) => {
     const { userId } = req.body;
     if (!userId) {
-        return res.status(400).json({ message: 'User ID is required' });
+        return res.status(400).json({ message: 'L’ID utilisateur est requis' });
     }
 
     try {
@@ -166,11 +166,11 @@ app.post('/api/student/data', async (req, res) => {
         if (students.length > 0) {
             res.status(200).json({ studentData: students[0] });
         } else {
-            res.status(404).json({ message: 'Student data not found' });
+            res.status(404).json({ message: 'Données de l’étudiant non trouvées' });
         }
     } catch (error) {
-        console.error('Fetch student data error:', error);
-        res.status(500).json({ message: 'Server error fetching student data' });
+        console.error('Erreur lors de la récupération des données de l’étudiant:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la récupération des données de l’étudiant' });
     }
 });
 
@@ -178,7 +178,7 @@ app.post('/api/student/data', async (req, res) => {
 app.post('/api/student/update-marks', async (req, res) => {
     const { userId, firstYearMark, secondYearMark, thirdYearMark } = req.body;
     if (!userId || firstYearMark === undefined || secondYearMark === undefined || thirdYearMark === undefined) {
-        return res.status(400).json({ message: 'User ID and all marks are required' });
+        return res.status(400).json({ message: 'L’ID utilisateur et toutes les notes sont requis' });
     }
 
     const calculatedScore = calculateScore(firstYearMark, secondYearMark, thirdYearMark);
@@ -188,10 +188,10 @@ app.post('/api/student/update-marks', async (req, res) => {
             'UPDATE students SET first_year_mark = ?, second_year_mark = ?, third_year_mark = ?, calculated_score = ? WHERE user_id = ?',
             [firstYearMark, secondYearMark, thirdYearMark, calculatedScore, userId]
         );
-        res.status(200).json({ message: 'Marks updated and score calculated successfully', calculatedScore });
+        res.status(200).json({ message: 'Notes mises à jour et score calculé avec succès', calculatedScore });
     } catch (error) {
-        console.error('Update marks error:', error);
-        res.status(500).json({ message: 'Server error updating marks' });
+        console.error('Erreur lors de la mise à jour des notes:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la mise à jour des notes' });
     }
 });
 
@@ -200,7 +200,7 @@ app.post('/api/student/upload-transcript', upload, async (req, res) => {
     const { studentId } = req.body;
     
     if (!studentId || !req.file) {
-        return res.status(400).json({ message: 'Student ID and PDF file are required' });
+        return res.status(400).json({ message: 'L’ID étudiant et le fichier PDF sont requis' });
     }
 
     try {
@@ -211,10 +211,10 @@ app.post('/api/student/upload-transcript', upload, async (req, res) => {
             [filePath, studentId]
         );
 
-        res.status(200).json({ message: 'Transcript uploaded successfully', filePath });
+        res.status(200).json({ message: 'Relevé de notes téléchargé avec succès', filePath });
     } catch (error) {
-        console.error('Upload transcript error:', error);
-        res.status(500).json({ message: 'Server error uploading transcript' });
+        console.error('Erreur lors du téléchargement du relevé de notes:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors du téléchargement du relevé de notes' });
     }
 });
 
@@ -245,8 +245,8 @@ app.post('/api/masters', async (req, res) => {
 
         res.status(200).json({ masters });
     } catch (error) {
-        console.error('Fetch masters error:', error);
-        res.status(500).json({ message: 'Server error fetching masters' });
+        console.error('Erreur lors de la récupération des masters:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la récupération des masters' });
     }
 });
 
@@ -254,7 +254,7 @@ app.post('/api/masters', async (req, res) => {
 app.post('/api/apply', async (req, res) => {
     const { studentId, masterId } = req.body;
     if (!studentId || !masterId) {
-        return res.status(400).json({ message: 'Student ID and Master ID are required' });
+        return res.status(400).json({ message: 'L’ID étudiant et l’ID du master sont requis' });
     }
 
     try {
@@ -264,7 +264,7 @@ app.post('/api/apply', async (req, res) => {
         );
 
         if (existingApplication.length > 0) {
-            return res.status(409).json({ message: 'You have already applied for this master' });
+            return res.status(409).json({ message: 'Vous avez déjà postulé pour ce master' });
         }
 
         const [master] = await dbPool.execute(
@@ -273,7 +273,7 @@ app.post('/api/apply', async (req, res) => {
         );
 
         if (master.length === 0) {
-            return res.status(404).json({ message: 'Master program not found' });
+            return res.status(404).json({ message: 'Programme de master non trouvé' });
         }
 
         const currentDate = new Date();
@@ -281,7 +281,7 @@ app.post('/api/apply', async (req, res) => {
         const endDate = new Date(master[0].application_end_date);
 
         if (currentDate < startDate || currentDate > endDate) {
-            return res.status(400).json({ message: 'Application period is closed' });
+            return res.status(400).json({ message: 'La période de candidature est fermée' });
         }
 
         const [student] = await dbPool.execute(
@@ -290,7 +290,7 @@ app.post('/api/apply', async (req, res) => {
         );
 
         if (student.length === 0) {
-            return res.status(404).json({ message: 'Student not found' });
+            return res.status(404).json({ message: 'Étudiant non trouvé' });
         }
 
         const studentSpeciality = student[0].speciality;
@@ -303,17 +303,17 @@ app.post('/api/apply', async (req, res) => {
         const isValidSpeciality = allowedSpecialities.some(s => s.speciality === studentSpeciality);
 
         if (!isValidSpeciality) {
-            return res.status(400).json({ message: `Your speciality (${studentSpeciality}) is not eligible for this master program.` });
+            return res.status(400).json({ message: `Votre spécialité (${studentSpeciality}) n’est pas éligible pour ce programme de master.` });
         }
 
         await dbPool.execute(
             'INSERT INTO applications (student_id, master_id, status) VALUES (?, ?, ?)',
             [studentId, masterId, 'pending']
         );
-        res.status(201).json({ message: 'Application submitted successfully' });
+        res.status(201).json({ message: 'Candidature soumise avec succès' });
     } catch (error) {
-        console.error('Apply error:', error);
-        res.status(500).json({ message: 'Server error submitting application' });
+        console.error('Erreur lors de la candidature:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la soumission de la candidature' });
     }
 });
 
@@ -321,7 +321,7 @@ app.post('/api/apply', async (req, res) => {
 app.post('/api/student/applications', async (req, res) => {
     const { studentId } = req.body;
     if (!studentId) {
-        return res.status(400).json({ message: 'Student ID is required' });
+        return res.status(400).json({ message: 'L’ID étudiant est requis' });
     }
 
     try {
@@ -343,8 +343,8 @@ app.post('/api/student/applications', async (req, res) => {
 
         res.status(200).json({ applications });
     } catch (error) {
-        console.error('Fetch student applications error:', error);
-        res.status(500).json({ message: 'Server error fetching student applications' });
+        console.error('Erreur lors de la récupération des candidatures:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la récupération des candidatures' });
     }
 });
 
@@ -371,8 +371,8 @@ app.get('/api/admin/applications', async (req, res) => {
 
         res.status(200).json({ applications });
     } catch (error) {
-        console.error('Fetch applications error:', error);
-        res.status(500).json({ message: 'Server error fetching applications' });
+        console.error('Erreur lors de la récupération des candidatures:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la récupération des candidatures' });
     }
 });
 
@@ -382,7 +382,7 @@ app.put('/api/admin/applications/:id/status', async (req, res) => {
     const { status } = req.body;
 
     if (!['accepted', 'rejected'].includes(status)) {
-        return res.status(400).json({ message: 'Invalid status' });
+        return res.status(400).json({ message: 'Statut invalide' });
     }
 
     try {
@@ -392,7 +392,7 @@ app.put('/api/admin/applications/:id/status', async (req, res) => {
         );
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Application not found' });
+            return res.status(404).json({ message: 'Candidature non trouvée' });
         }
 
         const [applicationDetails] = await dbPool.execute(
@@ -412,23 +412,23 @@ app.put('/api/admin/applications/:id/status', async (req, res) => {
             const mailOptions = {
                 from: GMAIL_USER,
                 to: studentEmail,
-                subject: `Your Application Status for ${masterName}`,
-                text: `Dear student, your application for the master "${masterName}" has been ${status}. You can see more details on your subscription page.`
+                subject: `Statut de Votre Candidature pour ${masterName}`,
+                text: `Cher(e) étudiant(e),\n\nVotre candidature pour le master "${masterName}" a été ${status === 'accepted' ? 'acceptée' : 'rejetée'}. Vous pouvez consulter plus de détails sur votre page de candidature.`
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.error('Error sending email:', error);
+                    console.error('Erreur lors de l’envoi du courriel:', error);
                 } else {
-                    console.log('Email sent:', info.response);
+                    console.log('Courriel envoyé:', info.response);
                 }
             });
         }
 
-        res.status(200).json({ message: `Application status updated to ${status}` });
+        res.status(200).json({ message: `Statut de la candidature mis à jour à ${status === 'accepted' ? 'accepté' : 'rejeté'}` });
     } catch (error) {
-        console.error('Update application status error:', error);
-        res.status(500).json({ message: 'Server error updating application status' });
+        console.error('Erreur lors de la mise à jour du statut de la candidature:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la mise à jour du statut de la candidature' });
     }
 });
 
@@ -436,12 +436,12 @@ app.put('/api/admin/applications/:id/status', async (req, res) => {
 app.post('/api/university/masters', async (req, res) => {
     const { universityId, name, description, specialities, maxStudents, applicationStartDate, applicationEndDate } = req.body;
     if (!universityId || !name || !specialities || !specialities.length || !maxStudents || !applicationStartDate || !applicationEndDate) {
-        return res.status(400).json({ message: 'All fields are required, including at least one speciality' });
+        return res.status(400).json({ message: 'Tous les champs sont requis, y compris au moins une spécialité' });
     }
 
     try {
         if (new Date(applicationEndDate) <= new Date(applicationStartDate)) {
-            return res.status(400).json({ message: 'Application end date must be after start date' });
+            return res.status(400).json({ message: 'La date de fin de candidature doit être postérieure à la date de début' });
         }
 
         const connection = await dbPool.getConnection();
@@ -461,7 +461,7 @@ app.post('/api/university/masters', async (req, res) => {
             );
 
             await connection.commit();
-            res.status(201).json({ message: 'Master added successfully' });
+            res.status(201).json({ message: 'Master ajouté avec succès' });
         } catch (error) {
             await connection.rollback();
             throw error;
@@ -469,8 +469,8 @@ app.post('/api/university/masters', async (req, res) => {
             connection.release();
         }
     } catch (error) {
-        console.error('Add master error:', error);
-        res.status(500).json({ message: 'Server error adding master' });
+        console.error('Erreur lors de l’ajout du master:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de l’ajout du master' });
     }
 });
 
@@ -485,13 +485,13 @@ app.delete('/api/university/masters/:id', async (req, res) => {
         );
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Master program not found' });
+            return res.status(404).json({ message: 'Programme de master non trouvé' });
         }
 
-        res.status(200).json({ message: 'Master program deleted successfully' });
+        res.status(200).json({ message: 'Programme de master supprimé avec succès' });
     } catch (error) {
-        console.error('Delete master error:', error);
-        res.status(500).json({ message: 'Server error deleting master' });
+        console.error('Erreur lors de la suppression du master:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la suppression du master' });
     }
 });
 
@@ -540,8 +540,8 @@ app.get('/api/superadmin/universities', async (req, res) => {
 
         res.status(200).json({ universities: universitiesWithMasters });
     } catch (error) {
-        console.error('Fetch universities error:', error);
-        res.status(500).json({ message: 'Server error fetching universities' });
+        console.error('Erreur lors de la récupération des universités:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la récupération des universités' });
     }
 });
 
@@ -549,7 +549,7 @@ app.get('/api/superadmin/universities', async (req, res) => {
 app.post('/api/superadmin/universities', async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
-        return res.status(400).json({ message: 'Name, email, and password are required' });
+        return res.status(400).json({ message: 'Le nom, l’email et le mot de passe sont requis' });
     }
 
     try {
@@ -559,7 +559,7 @@ app.post('/api/superadmin/universities', async (req, res) => {
         );
 
         if (existingUser.length > 0) {
-            return res.status(409).json({ message: 'Email already exists' });
+            return res.status(409).json({ message: 'Cet email existe déjà' });
         }
 
         await dbPool.execute(
@@ -570,22 +570,22 @@ app.post('/api/superadmin/universities', async (req, res) => {
         const mailOptions = {
             from: GMAIL_USER,
             to: email,
-            subject: 'University Account Created',
-            text: `Dear ${name},\n\nYour university account has been created.\n\nEmail: ${email}\nPassword: ${password}\n\nPlease login and change your password.`
+            subject: 'Compte Universitaire Créé',
+            text: `Cher(e) ${name},\n\nVotre compte universitaire a été créé.\n\nEmail : ${email}\nMot de passe : ${password}\n\nVeuillez vous connecter et changer votre mot de passe.`
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.error('Error sending email:', error);
+                console.error('Erreur lors de l’envoi du courriel:', error);
             } else {
-                console.log('Email sent:', info.response);
+                console.log('Courriel envoyé:', info.response);
             }
         });
 
-        res.status(201).json({ message: 'University added successfully' });
+        res.status(201).json({ message: 'Université ajoutée avec succès' });
     } catch (error) {
-        console.error('Add university error:', error);
-        res.status(500).json({ message: 'Server error adding university' });
+        console.error('Erreur lors de l’ajout de l’université:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de l’ajout de l’université' });
     }
 });
 
@@ -595,7 +595,7 @@ app.put('/api/superadmin/universities/:id', async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email) {
-        return res.status(400).json({ message: 'Name and email are required' });
+        return res.status(400).json({ message: 'Le nom et l’email sont requis' });
     }
 
     try {
@@ -605,7 +605,7 @@ app.put('/api/superadmin/universities/:id', async (req, res) => {
         );
 
         if (existingUser.length > 0) {
-            return res.status(409).json({ message: 'Email already exists' });
+            return res.status(409).json({ message: 'Cet email existe déjà' });
         }
 
         let query = 'UPDATE users SET name = ?, email = ?';
@@ -622,30 +622,30 @@ app.put('/api/superadmin/universities/:id', async (req, res) => {
         const [result] = await dbPool.execute(query, params);
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'University not found' });
+            return res.status(404).json({ message: 'Université non trouvée' });
         }
 
         if (password) {
             const mailOptions = {
                 from: GMAIL_USER,
                 to: email,
-                subject: 'University Account Updated',
-                text: `Dear ${name},\n\nYour university account has been updated.\n\nEmail: ${email}\nNew Password: ${password}\n\nPlease login with your new credentials.`
+                subject: 'Compte Universitaire Mis à Jour',
+                text: `Cher(e) ${name},\n\nVotre compte universitaire a été mis à jour.\n\nEmail : ${email}\nNouveau mot de passe : ${password}\n\nVeuillez vous connecter avec vos nouveaux identifiants.`
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.error('Error sending email:', error);
+                    console.error('Erreur lors de l’envoi du courriel:', error);
                 } else {
-                    console.log('Email sent:', info.response);
+                    console.log('Courriel envoyé:', info.response);
                 }
             });
         }
 
-        res.status(200).json({ message: 'University updated successfully' });
+        res.status(200).json({ message: 'Université mise à jour avec succès' });
     } catch (error) {
-        console.error('Update university error:', error);
-        res.status(500).json({ message: 'Server error updating university' });
+        console.error('Erreur lors de la mise à jour de l’université:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la mise à jour de l’université' });
     }
 });
 
@@ -660,13 +660,13 @@ app.delete('/api/superadmin/universities/:id', async (req, res) => {
         );
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'University not found' });
+            return res.status(404).json({ message: 'Université non trouvée' });
         }
 
-        res.status(200).json({ message: 'University deleted successfully' });
+        res.status(200).json({ message: 'Université supprimée avec succès' });
     } catch (error) {
-        console.error('Delete university error:', error);
-        res.status(500).json({ message: 'Server error deleting university' });
+        console.error('Erreur lors de la suppression de l’université:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la suppression de l’université' });
     }
 });
 
@@ -675,11 +675,11 @@ app.post('/api/feedback', async (req, res) => {
     const { userId, subject, message, rating } = req.body;
 
     if (!userId || !subject || !message || !rating) {
-        return res.status(400).json({ message: 'User ID, subject, message, and rating are required' });
+        return res.status(400).json({ message: 'L’ID utilisateur, le sujet, le message et l’évaluation sont requis' });
     }
 
     if (rating < 1 || rating > 5) {
-        return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+        return res.status(400).json({ message: 'L’évaluation doit être comprise entre 1 et 5' });
     }
 
     try {
@@ -692,24 +692,25 @@ app.post('/api/feedback', async (req, res) => {
         const mailOptions = {
             from: GMAIL_USER,
             to: 'admin@yourdomain.com', // Replace with your admin email
-            subject: `New Feedback: ${subject}`,
-            text: `New feedback from user ID ${userId}:\n\nSubject: ${subject}\nRating: ${rating}/5\nMessage: ${message}`
+            subject: `Nouveau Retour : ${subject}`,
+            text: `Nouveau retour de l’utilisateur ID ${userId} :\n\nSujet : ${subject}\nÉvaluation : ${rating}/5\nMessage : ${message}`
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.error('Error sending feedback email:', error);
+                console.error('Erreur lors de l’envoi du courriel de retour:', error);
             } else {
-                console.log('Feedback email sent:', info.response);
+                console.log('Courriel de retour envoyé:', info.response);
             }
         });
 
-        res.status(201).json({ message: 'Feedback submitted successfully' });
+        res.status(201).json({ message: 'Retour soumis avec succès' });
     } catch (error) {
-        console.error('Submit feedback error:', error);
-        res.status(500).json({ message: 'Server error submitting feedback' });
+        console.error('Erreur lors de la soumission du retour:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la soumission du retour' });
     }
 });
+
 // Super Admin: Fetch feedback endpoint
 app.get('/api/superadmin/feedback', async (req, res) => {
     try {
@@ -722,10 +723,11 @@ app.get('/api/superadmin/feedback', async (req, res) => {
 
         res.status(200).json({ feedbacks });
     } catch (error) {
-        console.error('Fetch feedback error:', error);
-        res.status(500).json({ message: 'Server error fetching feedback' });
+        console.error('Erreur lors de la récupération des retours:', error);
+        res.status(500).json({ message: 'Erreur du serveur lors de la récupération des retours' });
     }
 });
+
 app.listen(port, () => {
-    console.log(`Backend server running on http://localhost:${port}`);
+    console.log(`Serveur backend en cours d’exécution sur http://localhost:${port}`);
 });

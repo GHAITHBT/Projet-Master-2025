@@ -17,7 +17,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import './StudentDashboard.css';
 
 // Set up pdf.js worker to use local file
-pdfjs.GlobalWorkerOptions.workerSrc = '/assets/pdf.worker.min.mjs';
+pdfjs.GlobalWorkerOptions.workerSrc = '/assets/pdf.worker.min copy.mjs';
 
 function StudentDashboard({ user, onLogout }) {
   const [studentData, setStudentData] = useState(null);
@@ -63,8 +63,8 @@ function StudentDashboard({ user, onLogout }) {
         setThirdYearMark(response.data.studentData.third_year_mark || '');
       }
     } catch (err) {
-      console.error('Error fetching student data:', err);
-      setMessage('Error fetching student data.');
+      console.error('Erreur lors de la récupération des données de l’étudiant:', err);
+      setMessage('Erreur lors de la récupération des données de l’étudiant.');
     }
   };
 
@@ -73,8 +73,8 @@ function StudentDashboard({ user, onLogout }) {
       const response = await axios.post('http://localhost:3001/api/masters', { speciality: studentData?.speciality });
       setMasters(response.data.masters);
     } catch (err) {
-      console.error('Error fetching masters:', err);
-      setMessage('Error fetching masters.');
+      console.error('Erreur lors de la récupération des masters:', err);
+      setMessage('Erreur lors de la récupération des masters.');
     }
   };
 
@@ -83,8 +83,8 @@ function StudentDashboard({ user, onLogout }) {
       const response = await axios.post('http://localhost:3001/api/student/applications', { studentId: studentData?.id });
       setApplications(response.data.applications || []);
     } catch (err) {
-      console.error('Error fetching applications:', err);
-      setMessage('Error fetching your applications.');
+      console.error('Erreur lors de la récupération des candidatures:', err);
+      setMessage('Erreur lors de la récupération de vos candidatures.');
     }
   };
 
@@ -102,14 +102,14 @@ function StudentDashboard({ user, onLogout }) {
       showToast(response.data.message);
       fetchStudentData();
     } catch (err) {
-      console.error('Error updating marks:', err);
-      showToast(err.response?.data?.message || 'Error updating marks.', 'error');
+      console.error('Erreur lors de la mise à jour des notes:', err);
+      showToast(err.response?.data?.message || 'Erreur lors de la mise à jour des notes.', 'error');
     }
   };
 
   const handleApply = async (masterId) => {
     if (!studentData || !studentData.id) {
-      showToast('Cannot apply. Student data not loaded.', 'error');
+      showToast('Impossible de postuler. Données de l’étudiant non chargées.', 'error');
       return;
     }
     try {
@@ -120,15 +120,15 @@ function StudentDashboard({ user, onLogout }) {
       showToast(response.data.message);
       fetchApplications();
     } catch (err) {
-      console.error('Error applying:', err);
-      showToast(err.response?.data?.message || 'Error applying for master.', 'error');
+      console.error('Erreur lors de la candidature:', err);
+      showToast(err.response?.data?.message || 'Erreur lors de la candidature au master.', 'error');
     }
   };
 
   const handleUploadTranscript = async (e) => {
     e.preventDefault();
     if (!transcriptFile || !studentData?.id) {
-      showToast('Please select a PDF file and ensure student data is loaded.', 'error');
+      showToast('Veuillez sélectionner un fichier PDF et vous assurer que les données de l’étudiant sont chargées.', 'error');
       return;
     }
 
@@ -144,8 +144,8 @@ function StudentDashboard({ user, onLogout }) {
       setTranscriptFile(null);
       fetchStudentData();
     } catch (err) {
-      console.error('Error uploading transcript:', err);
-      showToast(err.response?.data?.message || 'Error uploading transcript.', 'error');
+      console.error('Erreur lors du téléchargement du relevé de notes:', err);
+      showToast(err.response?.data?.message || 'Erreur lors du téléchargement du relevé de notes.', 'error');
     }
   };
   
@@ -162,8 +162,8 @@ function StudentDashboard({ user, onLogout }) {
       setShowFeedback(false);
       setFeedback({ subject: '', message: '', rating: 5 });
     } catch (err) {
-      console.error('Error submitting feedback:', err);
-      showToast(err.response?.data?.message || 'Error submitting feedback.', 'error');
+      console.error('Erreur lors de l’envoi du retour:', err);
+      showToast(err.response?.data?.message || 'Erreur lors de l’envoi du retour.', 'error');
     } finally {
       setIsSubmittingFeedback(false);
     }
@@ -226,7 +226,7 @@ function StudentDashboard({ user, onLogout }) {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
-        <p>Loading dashboard...</p>
+        <p>Chargement du tableau de bord...</p>
       </div>
     );
   }
@@ -234,58 +234,55 @@ function StudentDashboard({ user, onLogout }) {
   return (
     <div className="dashboard-container">
       <nav className="top-nav">
-  <div className="logo">
-    <Book size={24} />
-    <span>EduMasters</span>
-  </div>
-  
-  <div className="nav-actions">
-    <button 
-      className="feedback-btn"
-      onClick={() => setShowFeedback(true)}
-    >
-      <MessageSquare size={18} />
-      <span>Feedback</span>
-    </button>
-    
-    <div className="user-profile" onClick={() => setShowUserInfo(!showUserInfo)}>
-      <div className="avatar">
-        <User size={18} />
-      </div>
-      <span className="username">{user.email.split('@')[0]}</span>
-      {showUserInfo ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      
-      {/* Move the dropdown here, inside the user-profile div */}
-      <AnimatePresence>
-        {showUserInfo && (
-          <motion.div 
-            className="user-info-dropdown"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.2 }}
+        <div className="logo">
+          <Book size={24} />
+          <span>EduMasters</span>
+        </div>
+        
+        <div className="nav-actions">
+          <button 
+            className="feedback-btn"
+            onClick={() => setShowFeedback(true)}
           >
-            <div className="user-details">
-              <p><strong>Email:</strong> {user.email}</p>
-              {studentData && (
-                <>
-                  <p><strong>Speciality:</strong> {studentData.speciality}</p>
-                  <p><strong>ID:</strong> #{studentData.id}</p>
-                </>
-              )}
+            <MessageSquare size={18} />
+            <span>Retour</span>
+          </button>
+          
+          <div className="user-profile" onClick={() => setShowUserInfo(!showUserInfo)}>
+            <div className="avatar">
+              <User size={18} />
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-    
-    <button className="logout-btn" onClick={onLogout}>
-      <LogOut size={18} />
-    </button>
-  </div>
-</nav>
-      
-      
+            <span className="username">{user.email.split('@')[0]}</span>
+            {showUserInfo ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            
+            <AnimatePresence>
+              {showUserInfo && (
+                <motion.div 
+                  className="user-info-dropdown"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="user-details">
+                    <p><strong>Email :</strong> {user.email}</p>
+                    {studentData && (
+                      <>
+                        <p><strong>Spécialité :</strong> {studentData.speciality}</p>
+                        <p><strong>ID :</strong> #{studentData.id}</p>
+                      </>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          
+          <button className="logout-btn" onClick={onLogout}>
+            <LogOut size={18} />
+          </button>
+        </div>
+      </nav>
       
       <AnimatePresence>
         {message && (
@@ -311,8 +308,8 @@ function StudentDashboard({ user, onLogout }) {
           variants={itemVariants}
         >
           <div className="welcome-text">
-            <h1>Welcome back, {user.email.split('@')[0]}!</h1>
-            <p>Here's your academic progress and opportunities</p>
+            <h1>Bon retour, {user.email.split('@')[0]} !</h1>
+            <p>Voici votre progression académique et vos opportunités</p>
           </div>
           <div className="score-indicator">
             <div className="score-circle">
@@ -328,21 +325,21 @@ function StudentDashboard({ user, onLogout }) {
             onClick={() => setActiveTab('marks')}
           >
             <Award size={18} />
-            <span>Your Marks</span>
+            <span>Vos Notes</span>
           </button>
           <button 
             className={`tab-btn ${activeTab === 'masters' ? 'active' : ''}`}
             onClick={() => setActiveTab('masters')}
           >
             <Book size={18} />
-            <span>Masters Programs</span>
+            <span>Programmes de Master</span>
           </button>
           <button 
             className={`tab-btn ${activeTab === 'applications' ? 'active' : ''}`}
             onClick={() => setActiveTab('applications')}
           >
             <FileText size={18} />
-            <span>Your Applications</span>
+            <span>Vos Candidatures</span>
           </button>
         </motion.div>
         
@@ -356,7 +353,7 @@ function StudentDashboard({ user, onLogout }) {
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
             >
-              <h3>Your Academic Record</h3>
+              <h3>Votre Dossier Académique</h3>
               {studentData ? (
                 <>
                   <div className="speciality-badge">
@@ -365,7 +362,7 @@ function StudentDashboard({ user, onLogout }) {
                   
                   <form onSubmit={handleUpdateMarks} className="marks-form">
                     <div className="form-group">
-                      <label>First Year Mark</label>
+                      <label>Note de la Première Année</label>
                       <input
                         type="number"
                         step="0.01"
@@ -374,7 +371,7 @@ function StudentDashboard({ user, onLogout }) {
                       />
                     </div>
                     <div className="form-group">
-                      <label>Second Year Mark</label>
+                      <label>Note de la Deuxième Année</label>
                       <input
                         type="number"
                         step="0.01"
@@ -383,7 +380,7 @@ function StudentDashboard({ user, onLogout }) {
                       />
                     </div>
                     <div className="form-group">
-                      <label>Third Year Mark</label>
+                      <label>Note de la Troisième Année</label>
                       <input
                         type="number"
                         step="0.01"
@@ -395,35 +392,35 @@ function StudentDashboard({ user, onLogout }) {
                       type="submit"
                       className="update-btn"
                     >
-                      Update Marks & Calculate Score
+                      Mettre à Jour les Notes et Calculer le Score
                     </button>
                   </form>
 
                   <div className="transcript-upload-section">
-                    <h4>Upload Academic Transcript</h4>
+                    <h4>Télécharger le Relevé de Notes Académique</h4>
                     {studentData.transcript_pdf && (
                       <div className="current-transcript">
                         <p>
-                          Current Transcript: 
+                          Relevé Actuel : 
                           <button 
                             className="view-transcript-btn"
                             onClick={() => setShowPdfViewer(true)}
                           >
-                            View Transcript
+                            Voir le Relevé
                           </button>
                           <a 
                             href={`http://localhost:3001/${studentData.transcript_pdf}`} 
                             download
                             className="download-transcript-link"
                           >
-                            Download PDF
+                            Télécharger le PDF
                           </a>
                         </p>
                       </div>
                     )}
                     <form onSubmit={handleUploadTranscript}>
                       <div className="form-group">
-                        <label>Upload PDF Transcript (max 10MB)</label>
+                        <label>Télécharger le Relevé PDF (max 10MB)</label>
                         <input
                           type="file"
                           accept="application/pdf"
@@ -435,13 +432,13 @@ function StudentDashboard({ user, onLogout }) {
                         className="upload-btn"
                         disabled={!transcriptFile}
                       >
-                        Upload Transcript
+                        Télécharger le Relevé
                       </button>
                     </form>
                   </div>
                 </>
               ) : (
-                <p>Loading student data...</p>
+                <p>Chargement des données de l’étudiant...</p>
               )}
             </motion.div>
           )}
@@ -455,8 +452,8 @@ function StudentDashboard({ user, onLogout }) {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <h3>Available Masters Programs</h3>
-              <p className="speciality-note">Showing programs for {studentData?.speciality || 'your speciality'}</p>
+              <h3>Programmes de Master Disponibles</h3>
+              <p className="speciality-note">Affichage des programmes pour {studentData?.speciality || 'votre spécialité'}</p>
               
               {masters.length > 0 ? (
                 <div className="masters-list">
@@ -476,34 +473,34 @@ function StudentDashboard({ user, onLogout }) {
                           <p>{master.description}</p>
                           <div className="master-meta">
                             <span className="meta-item">
-                              Eligible Specialities: {master.specialities.length > 0 ? master.specialities.join(', ') : 'Multiple Specialities'}
+                              Spécialités Éligibles : {master.specialities.length > 0 ? master.specialities.join(', ') : 'Plusieurs Spécialités'}
                             </span>
-                            <span className="meta-item">Max Students: {master.max_students}</span>
+                            <span className="meta-item">Étudiants Max : {master.max_students}</span>
                             <span className="meta-item">
-                              Applications: {master.application_count}
+                              Candidatures : {master.application_count}
                             </span>
                             <span className="meta-item application-period">
-                              Application Period: {new Date(master.application_start_date).toLocaleDateString()} - {new Date(master.application_end_date).toLocaleDateString()}
+                              Période de Candidature : {new Date(master.application_start_date).toLocaleDateString('fr-FR')} - {new Date(master.application_end_date).toLocaleDateString('fr-FR')}
                             </span>
                             {applicationStatus.status === 'pending' && (
                               <span className="meta-item application-pending">
-                                Opens in {applicationStatus.daysLeft} day{applicationStatus.daysLeft !== 1 ? 's' : ''}
+                                Ouvre dans {applicationStatus.daysLeft} jour{applicationStatus.daysLeft !== 1 ? 's' : ''}
                               </span>
                             )}
                           </div>
                         </div>
                         {applied ? (
-                          <span className="applied-status">Applied</span>
+                          <span className="applied-status">Candidature Envoyée</span>
                         ) : applicationStatus.status === 'active' ? (
                           <button
                             onClick={() => handleApply(master.id)}
                             className="apply-btn"
                           >
-                            Apply
+                            Postuler
                           </button>
                         ) : (
                           <span className="closed-status">
-                            {applicationStatus.status === 'pending' ? 'Not Yet Open' : 'Closed'}
+                            {applicationStatus.status === 'pending' ? 'Pas Encore Ouvert' : 'Fermé'}
                           </span>
                         )}
                       </motion.div>
@@ -512,7 +509,7 @@ function StudentDashboard({ user, onLogout }) {
                 </div>
               ) : (
                 <div className="no-masters">
-                  <p>No masters programs available for your speciality yet.</p>
+                  <p>Aucun programme de master disponible pour votre spécialité pour le moment.</p>
                 </div>
               )}
             </motion.div>
@@ -527,7 +524,7 @@ function StudentDashboard({ user, onLogout }) {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <h3>Your Applications</h3>
+              <h3>Vos Candidatures</h3>
               {applications.length > 0 ? (
                 <div className="applications-list">
                   {applications.map((app, index) => (
@@ -540,14 +537,14 @@ function StudentDashboard({ user, onLogout }) {
                     >
                       <div className="application-content">
                         <h4>{app.master_name}</h4>
-                        <p>Required Speciality: {app.master_specialities?.length > 0 ? app.master_specialities.join(', ') : 'Multiple Specialities'}</p>
+                        <p>Spécialité Requise : {app.master_specialities?.length > 0 ? app.master_specialities.join(', ') : 'Plusieurs Spécialités'}</p>
                         <div className="application-meta">
-                          <span className="meta-item">Max Students: {app.max_students}</span>
+                          <span className="meta-item">Étudiants Max : {app.max_students}</span>
                           <span className="meta-item">
-                            Application Period: {new Date(app.application_start_date).toLocaleDateString()} - {new Date(app.application_end_date).toLocaleDateString()}
+                            Période de Candidature : {new Date(app.application_start_date).toLocaleDateString('fr-FR')} - {new Date(app.application_end_date).toLocaleDateString('fr-FR')}
                           </span>
                           <span className={`meta-item status-${app.status}`}>
-                            Status: {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                            Statut : {app.status === 'pending' ? 'En Attente' : app.status === 'accepted' ? 'Accepté' : 'Rejeté'}
                           </span>
                         </div>
                       </div>
@@ -556,7 +553,7 @@ function StudentDashboard({ user, onLogout }) {
                 </div>
               ) : (
                 <div className="no-applications">
-                  <p>You haven't applied to any master programs yet.</p>
+                  <p>Vous n’avez encore postulé à aucun programme de master.</p>
                 </div>
               )}
             </motion.div>
@@ -580,7 +577,7 @@ function StudentDashboard({ user, onLogout }) {
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
             >
               <div className="modal-header">
-                <h3>Send Feedback</h3>
+                <h3>Envoyer un Retour</h3>
                 <button className="close-btn" onClick={() => setShowFeedback(false)}>
                   <X size={20} />
                 </button>
@@ -588,10 +585,10 @@ function StudentDashboard({ user, onLogout }) {
               
               <div className="modal-body">
                 <div className="form-group">
-                  <label>Subject</label>
+                  <label>Sujet</label>
                   <input 
                     type="text" 
-                    placeholder="What's this about?"
+                    placeholder="De quoi s'agit-il ?"
                     value={feedback.subject}
                     onChange={(e) => setFeedback({...feedback, subject: e.target.value})}
                     required
@@ -601,7 +598,7 @@ function StudentDashboard({ user, onLogout }) {
                 <div className="form-group">
                   <label>Message</label>
                   <textarea 
-                    placeholder="Tell us what you think..."
+                    placeholder="Dites-nous ce que vous pensez..."
                     value={feedback.message}
                     onChange={(e) => setFeedback({...feedback, message: e.target.value})}
                     rows={5}
@@ -610,7 +607,7 @@ function StudentDashboard({ user, onLogout }) {
                 </div>
                 
                 <div className="form-group">
-                  <label>Rate your experience (1-5)</label>
+                  <label>Évaluez votre expérience (1-5)</label>
                   <div className="rating-selector">
                     {[1, 2, 3, 4, 5].map((num) => (
                       <button 
@@ -631,7 +628,7 @@ function StudentDashboard({ user, onLogout }) {
                   className="cancel-btn" 
                   onClick={() => setShowFeedback(false)}
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button 
                   className="submit-btn"
@@ -639,7 +636,7 @@ function StudentDashboard({ user, onLogout }) {
                   disabled={!feedback.subject || !feedback.message || isSubmittingFeedback}
                 >
                   <Send size={16} />
-                  <span>{isSubmittingFeedback ? 'Sending...' : 'Send Feedback'}</span>
+                  <span>{isSubmittingFeedback ? 'Envoi en cours...' : 'Envoyer le Retour'}</span>
                 </button>
               </div>
             </motion.div>
@@ -663,7 +660,7 @@ function StudentDashboard({ user, onLogout }) {
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
             >
               <div className="modal-header">
-                <h3>Academic Transcript</h3>
+                <h3>Relevé de Notes Académique</h3>
                 <button className="close-btn" onClick={() => setShowPdfViewer(false)}>
                   <X size={20} />
                 </button>
@@ -674,8 +671,8 @@ function StudentDashboard({ user, onLogout }) {
                     file={`http://localhost:3001/${studentData.transcript_pdf}`}
                     onLoadSuccess={onDocumentLoadSuccess}
                     onLoadError={(error) => {
-                      console.error('Error loading PDF:', error);
-                      showToast('Error loading PDF. Please try downloading instead.', 'error');
+                      console.error('Erreur lors du chargement du PDF:', error);
+                      showToast('Erreur lors du chargement du PDF. Essayez de le télécharger à la place.', 'error');
                     }}
                   >
                     <Page pageNumber={pageNumber} width={600} />
@@ -687,17 +684,17 @@ function StudentDashboard({ user, onLogout }) {
                         onClick={() => setPageNumber(pageNumber - 1)}
                         className="pdf-nav-btn"
                       >
-                        Previous
+                        Précédent
                       </button>
                       <span>
-                        Page {pageNumber} of {numPages}
+                        Page {pageNumber} de {numPages}
                       </span>
                       <button
                         disabled={pageNumber >= numPages}
                         onClick={() => setPageNumber(pageNumber + 1)}
                         className="pdf-nav-btn"
                       >
-                        Next
+                        Suivant
                       </button>
                     </div>
                   )}

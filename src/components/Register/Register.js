@@ -7,42 +7,42 @@ function Register({ onRegistrationSuccess, onBackToLogin }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [speciality, setSpeciality] = useState('');
-  const [name, setName] = useState(''); // Added name state
+  const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [specialities] = useState([
-    'Computer Science', 
-    'Information Technology', 
-    'Data Science', 
-    'Artificial Intelligence', 
-    'Software Engineering',
-    'Cybersecurity',
-    'Electronics',
-    'Mechanical Engineering',
-    'Civil Engineering',
-    'Business Administration'
+    'Informatique',
+    'Technologies de l’Information',
+    'Science des Données',
+    'Intelligence Artificielle',
+    'Ingénierie Logicielle',
+    'Cybersécurité',
+    'Électronique',
+    'Ingénierie Mécanique',
+    'Ingénierie Civile',
+    'Administration des Affaires'
   ]);
 
   const validateForm = () => {
-    if (!email || !password || !confirmPassword || !speciality || !name) { // Added name to validation
-      setError('All fields are required');
+    if (!email || !password || !confirmPassword || !speciality || !name) {
+      setError('Tous les champs sont requis');
       return false;
     }
     
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('Les mots de passe ne correspondent pas');
       return false;
     }
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
+      setError('Veuillez entrer une adresse email valide');
       return false;
     }
     
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError('Le mot de passe doit contenir au moins 6 caractères');
       return false;
     }
     
@@ -65,25 +65,25 @@ function Register({ onRegistrationSuccess, onBackToLogin }) {
         email, 
         password, 
         speciality,
-        name // Added name to the request payload
+        name
       });
       
-      setMessage(response.data.message || 'Registration successful!');
+      setMessage(response.data.message || 'Inscription réussie !');
       
       setEmail('');
       setPassword('');
       setConfirmPassword('');
       setSpeciality('');
-      setName(''); // Reset name field
+      setName('');
       
       setTimeout(() => {
         onRegistrationSuccess();
       }, 1500);
     } catch (err) {
-      console.error('Registration error:', err);
+      console.error('Erreur d’inscription:', err);
       setError(
         err.response?.data?.message || 
-        'Registration failed. Please make sure the backend server is running and try again.'
+        'Échec de l’inscription. Assurez-vous que le serveur backend est en cours d’exécution et réessayez.'
       );
     } finally {
       setLoading(false);
@@ -98,8 +98,8 @@ function Register({ onRegistrationSuccess, onBackToLogin }) {
     <div className="register-container">
       <div className="register-card">
         <div className="register-header">
-          <h2 className="register-title">Create Account</h2>
-          <p className="register-subtitle">Join our university masters application platform</p>
+          <h2 className="register-title">Créer un Compte</h2>
+          <p className="register-subtitle">Rejoignez notre plateforme de candidatures aux masters universitaires</p>
         </div>
 
         {error && <div className="alert alert-error">{error}</div>}
@@ -107,59 +107,59 @@ function Register({ onRegistrationSuccess, onBackToLogin }) {
         
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
-            <label htmlFor="name">Full Name</label> {/* Added name field */}
+            <label htmlFor="name">Nom Complet</label>
             <input
               id="name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your full name"
+              placeholder="Entrez votre nom complet"
               disabled={loading}
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">Adresse Email</label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="Entrez votre email"
               disabled={loading}
               required
             />
           </div>
           
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Mot de Passe</label>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Create a password"
+              placeholder="Créez un mot de passe"
               disabled={loading}
               required
             />
           </div>
           
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label htmlFor="confirmPassword">Confirmer le Mot de Passe</label>
             <input
               id="confirmPassword"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm your password"
+              placeholder="Confirmez votre mot de passe"
               disabled={loading}
               required
             />
           </div>
           
           <div className="form-group">
-            <label htmlFor="speciality">Your Speciality</label>
+            <label htmlFor="speciality">Votre Spécialité</label>
             <select
               id="speciality"
               value={speciality}
@@ -167,7 +167,7 @@ function Register({ onRegistrationSuccess, onBackToLogin }) {
               disabled={loading}
               required
             >
-              <option value="">Select your speciality</option>
+              <option value="">Sélectionnez votre spécialité</option>
               {specialities.map((spec, index) => (
                 <option key={index} value={spec}>
                   {spec}
@@ -181,7 +181,7 @@ function Register({ onRegistrationSuccess, onBackToLogin }) {
             className="btn btn-primary"
             disabled={loading}
           >
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? 'Inscription en cours...' : 'S’inscrire'}
           </button>
           
           <button
@@ -190,15 +190,15 @@ function Register({ onRegistrationSuccess, onBackToLogin }) {
             className="btn btn-secondary"
             disabled={loading}
           >
-            Back to Login
+            Retour à la Connexion
           </button>
         </form>
         
         <div className="register-footer">
           <p>
-            Already have an account?{' '}
+            Vous avez déjà un compte ?{' '}
             <button className="text-link" onClick={onBackToLogin}>
-              Sign In
+              Se Connecter
             </button>
           </p>
         </div>

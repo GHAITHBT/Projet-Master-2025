@@ -4,7 +4,7 @@ import Register from './components/Register/Register';
 import Login from './components/Login/Login';
 import StudentDashboard from './components/Student/StudentDashboard';
 import UniversityDashboard from './components/University/UniversityDashboard';
-import SuperAdminDashboard from './components/SuperAdmin/SuperAdminDashboard';
+import SuperAdminDashboard from './components/Admin/AdminDashboard';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -50,9 +50,9 @@ function App() {
             <Login onLogin={handleLogin} />
             <div className="register-link-container">
               <p className="register-link-text">
-                Don't have an account?{' '}
+                Vous n'avez pas de compte ?{' '}
                 <button className="text-link" onClick={toggleRegister}>
-                  Register
+                  S'inscrire
                 </button>
               </p>
             </div>
@@ -72,13 +72,13 @@ function App() {
         return (
           <div className="unknown-role-wrapper">
             <div className="card">
-              <h3>Unknown User Role</h3>
-              <p>Your account type is not recognized by the system.</p>
+              <h3>Rôle d'Utilisateur Inconnu</h3>
+              <p>Votre type de compte n'est pas reconnu par le système.</p>
               <button
                 onClick={handleLogout}
                 className="logout-btn"
               >
-                Logout
+                Déconnexion
               </button>
             </div>
           </div>
