@@ -47,7 +47,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem; /* Matches university header padding */
-  background-color: var(--secondary-color); /* University Header Background */
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
   color: white; /* White text for dark background */
   box-shadow: var(--shadow); /* University Shadow */
   position: sticky;

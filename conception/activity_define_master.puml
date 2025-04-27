@@ -1,0 +1,40 @@
+@startuml DefineMasterActivity
+
+title Diagramme d'activité : Définition des masters par l'établissement
+
+|Établissement|
+start
+: S'authentifier;
+
+|Système|
+: Vérifier les identifiants;
+
+|Établissement|
+if (Identifiants valides ?) then (oui)
+  : Accéder à la gestion des masters;
+  : Choisir de créer un nouveau master ou modifier un existant;
+  if (Créer nouveau ?) then (oui)
+    : Remplir les informations du master (nom, description, places, dates, etc.);
+    : Ajouter les spécialités associées;
+    : Définir les critères d'admission;
+    |Système|
+    : Enregistrer le nouveau master et ses détails;
+    : Confirmer la création;
+  else (Modifier existant)
+    : Sélectionner un master existant;
+    : Modifier les informations nécessaires;
+    : Ajouter/Supprimer des spécialités;
+    : Mettre à jour les critères;
+    |Système|
+    : Enregistrer les modifications;
+    : Confirmer la mise à jour;
+  endif
+  : Fin de la gestion des masters;
+  stop
+else (non)
+  : Afficher un message d'erreur;
+  stop
+endif
+
+@enduml
+

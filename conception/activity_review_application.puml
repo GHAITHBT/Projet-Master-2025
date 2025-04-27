@@ -1,0 +1,35 @@
+@startuml ReviewApplicationActivity
+
+title Diagramme d'activité : Examen des candidatures par l'établissement
+
+|Établissement|
+start
+: S'authentifier;
+
+|Système|
+: Vérifier les identifiants;
+
+|Établissement|
+if (Identifiants valides ?) then (oui)
+  : Accéder à la liste des candidatures (statut 'pending');
+  while (Candidatures à examiner ?) is (oui)
+    : Sélectionner une candidature;
+    : Examiner les détails de la candidature (notes, documents, etc.);
+    : Prendre une décision (Accepter/Rejeter);
+    |Système|
+    if (Décision prise ?) then (oui)
+      : Mettre à jour le statut de la candidature ('accepted' ou 'rejected');
+      : Notifier l'étudiant (optionnel, peut être une étape séparée);
+    else (non)
+      : Laisser la candidature en 'pending';
+    endif
+  endwhile (non)
+  : Fin de l'examen;
+  stop
+else (non)
+  : Afficher un message d'erreur;
+  stop
+endif
+
+@enduml
+

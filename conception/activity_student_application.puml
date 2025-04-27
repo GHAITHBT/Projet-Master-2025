@@ -1,0 +1,36 @@
+@startuml StudentApplicationActivity
+
+title Diagramme d'activité : Soumission de candidature par l'étudiant
+
+|Étudiant| 
+start
+: S'authentifier;
+
+|Système|
+: Vérifier les identifiants;
+
+|Étudiant|
+if (Identifiants valides ?) then (oui)
+  : Rechercher des masters;
+  : Sélectionner un master;
+  : Remplir le formulaire de candidature;
+  : Téléverser les documents requis (relevé de notes, etc.);
+  if (Formulaire et documents complets ?) then (oui)
+    : Soumettre la candidature;
+    |Système|
+    : Enregistrer la candidature;
+    : Mettre à jour le statut à 'pending';
+    : Confirmer la soumission à l'étudiant;
+    |Étudiant|
+    stop
+  else (non)
+    : Compléter les informations/documents;
+    -> Recommencer à "Remplir le formulaire";
+  endif
+else (non)
+  : Afficher un message d'erreur;
+  stop
+endif
+
+@enduml
+

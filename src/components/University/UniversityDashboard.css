@@ -33,7 +33,7 @@ body {
 
 /* Header Styles */
 .dashboard-header {
-  background-color: var(--secondary-color);
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
   color: white;
   padding: 1rem 2rem;
   box-shadow: var(--shadow);

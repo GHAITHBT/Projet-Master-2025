@@ -47,7 +47,7 @@ button {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: var(--secondary-color);
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
   color: white;
   box-shadow: var(--shadow);
   position: sticky;
