@@ -1,0 +1,4 @@
+           email               password             role    
+'superadmin@university.app',   '123456',       'super_admin'
+'student@university.app',      '123456',       'student'
+'iset@jendouba.tn',            '123456',       'university'
