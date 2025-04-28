@@ -33,7 +33,7 @@ CREATE TABLE `users` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (6,'superadmin@university.app','123456','super_admin','2025-04-24 07:56:13','Super Admin'),(8,'student1@university.app','student_password','student','2025-04-24 07:56:13','John Doe'),(10,'g@g.g','123456','student','2025-04-25 07:24:41','jamel khemiri'),(12,'iset@jendouba.tn','654321','university','2025-04-25 08:07:24','ISET JENDOUBA'),(13,'Maysa@gmail.com','123456','student','2025-04-25 08:49:45','Mayssa'),(14,'ggtouati@gmail.com','123456','student','2025-04-26 19:49:14','testing'),(15,'ghg@gmail.com','123456','student','2025-04-26 20:58:00','testing1');
+INSERT INTO `users` VALUES (6,'superadmin@university.app','123456','super_admin','2025-04-24 07:56:13','Admin'),(8,'student@university.app','123456','student','2025-04-24 07:56:13','Student'),(12,'iset@jendouba.tn','123456','university','2025-04-25 08:07:24','ISET JENDOUBA');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-27 18:34:03
+-- Dump completed on 2025-04-28 10:18:08

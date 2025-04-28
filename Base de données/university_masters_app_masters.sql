@@ -36,7 +36,7 @@ CREATE TABLE `masters` (
   PRIMARY KEY (`id`),
   KEY `university_id` (`university_id`),
   CONSTRAINT `masters_ibfk_1` FOREIGN KEY (`university_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,6 @@ CREATE TABLE `masters` (
 
 LOCK TABLES `masters` WRITE;
 /*!40000 ALTER TABLE `masters` DISABLE KEYS */;
-INSERT INTO `masters` VALUES (8,12,'TEST','NONE',10,'2025-04-25 08:09:20','2025-04-26','2025-05-03'),(9,12,'TEST2','working',30,'2025-04-25 11:11:11','2025-04-24','2025-04-30'),(10,12,'kkkk','kkk',1,'2025-04-26 17:58:10','2025-04-26','2025-04-30');
 /*!40000 ALTER TABLE `masters` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-27 18:34:04
+-- Dump completed on 2025-04-28 10:18:09

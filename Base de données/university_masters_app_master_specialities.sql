@@ -32,7 +32,7 @@ CREATE TABLE `master_specialities` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `master_id` (`master_id`,`speciality`),
   CONSTRAINT `master_specialities_ibfk_1` FOREIGN KEY (`master_id`) REFERENCES `masters` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,6 @@ CREATE TABLE `master_specialities` (
 
 LOCK TABLES `master_specialities` WRITE;
 /*!40000 ALTER TABLE `master_specialities` DISABLE KEYS */;
-INSERT INTO `master_specialities` VALUES (1,10,'Computer Science','2025-04-26 17:58:10'),(2,10,'Information Technology','2025-04-26 17:58:10'),(3,10,'Data Science','2025-04-26 17:58:10'),(4,10,'Artificial Intelligence','2025-04-26 17:58:10'),(5,10,'Software Engineering','2025-04-26 17:58:10');
 /*!40000 ALTER TABLE `master_specialities` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-27 18:34:03
+-- Dump completed on 2025-04-28 10:18:08
