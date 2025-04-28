@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
 import './AdminDashboard.css';
+
+// Set up the PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = '/assets/pdf.worker.min copy.mjs';
 
 function SuperAdminDashboard({ user, onLogout }) {
     const [universities, setUniversities] = useState([]);
@@ -13,10 +17,18 @@ function SuperAdminDashboard({ user, onLogout }) {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(true);
     const [showUserInfo, setShowUserInfo] = useState(false);
-    const [expandedUni, setExpandedUni] = useState(null);
-    const [expandedMaster, setExpandedMaster] = useState(null);
     const [feedbacks, setFeedbacks] = useState([]);
     const [feedbackLoading, setFeedbackLoading] = useState(false);
+    // State for modals
+    const [showMastersModal, setShowMastersModal] = useState(false);
+    const [selectedUniversity, setSelectedUniversity] = useState(null);
+    const [showApplicationsModal, setShowApplicationsModal] = useState(false);
+    const [selectedMaster, setSelectedMaster] = useState(null);
+    // State for PDF viewer
+    const [showPdfViewer, setShowPdfViewer] = useState(false);
+    const [selectedTranscript, setSelectedTranscript] = useState(null);
+    const [numPages, setNumPages] = useState(null);
+    const [pageNumber, setPageNumber] = useState(1);
 
     const [stats, setStats] = useState({
         totalUniversities: 0,
@@ -224,17 +236,28 @@ function SuperAdminDashboard({ user, onLogout }) {
         setShowUserInfo(!showUserInfo);
     };
 
-    const toggleUniversity = (uniId) => {
-        setExpandedUni(expandedUni === uniId ? null : uniId);
-        setExpandedMaster(null);
+    const handleUniversityClick = (uni) => {
+        setSelectedUniversity(uni);
+        setShowMastersModal(true);
     };
 
-    const toggleMaster = (masterId) => {
-        setExpandedMaster(expandedMaster === masterId ? null : masterId);
+    const handleMasterClick = (master) => {
+        setSelectedMaster(master);
+        setShowApplicationsModal(true);
     };
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('fr-FR');
+    };
+
+    const onDocumentLoadSuccess = ({ numPages }) => {
+        setNumPages(numPages);
+        setPageNumber(1);
+    };
+
+    const handleViewTranscript = (transcriptPath) => {
+        setSelectedTranscript(transcriptPath);
+        setShowPdfViewer(true);
     };
 
     return (
@@ -396,113 +419,29 @@ function SuperAdminDashboard({ user, onLogout }) {
                                             </div>
                                         </form>
                                     ) : (
-                                        <>
-                                            <div className="university-header">
-                                                <div
-                                                    className="university-info"
-                                                    onClick={() => toggleUniversity(uni.id)}
-                                                >
-                                                    <span className="university-title">{uni.name}</span>
-                                                    <span className="university-email">({uni.email})</span>
-                                                </div>
-                                                <div className="university-actions">
-                                                    <button
-                                                        onClick={() => handleEditUniversity(uni)}
-                                                        className="btn btn-primary btn-sm"
-                                                    >
-                                                        Modifier
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteUniversity(uni.id)}
-                                                        className="btn btn-danger btn-sm"
-                                                    >
-                                                        Supprimer
-                                                    </button>
-                                                </div>
+                                        <div className="university-content">
+                                            <div
+                                                className="university-clickable"
+                                                onClick={() => handleUniversityClick(uni)}
+                                            >
+                                                <span className="university-title">{uni.name}</span>
+                                                <span className="university-email">({uni.email})</span>
                                             </div>
-                                            {expandedUni === uni.id && (
-                                                <div className="master-program-list">
-                                                    {uni.masters.length > 0 ? (
-                                                        <div>
-                                                            {uni.masters.map((master) => (
-                                                                <div key={master.id} className="master-program-item">
-                                                                    <div
-                                                                        className="master-program-header"
-                                                                        onClick={() => toggleMaster(master.id)}
-                                                                    >
-                                                                        <h4 className="master-name">{master.name}</h4>
-                                                                        <p className="master-description">{master.description}</p>
-                                                                        <div className="master-details">
-                                                                            <p>Requis: <span className="highlight">{master.required_speciality}</span></p>
-                                                                            <p>Étudiants Max: <span className="highlight">{master.max_students}</span></p>
-                                                                            <p>Candidatures: <span className="highlight">{master.application_count || 0}</span></p>
-                                                                            <p>
-                                                                                Période de Candidature:{' '}
-                                                                                <span className="highlight">
-                                                                                    {formatDate(master.application_start_date)} - {formatDate(master.application_end_date)}
-                                                                                </span>
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                    {expandedMaster === master.id && (
-                                                                        <div className="application-list">
-                                                                            <h5 className="applications-heading">Candidatures</h5>
-                                                                            {master.applications.length > 0 ? (
-                                                                                <div className="applications-container">
-                                                                                    {master.applications.map((app) => (
-                                                                                        <div
-                                                                                            key={app.id}
-                                                                                            className="application-item"
-                                                                                        >
-                                                                                            <div className="application-grid">
-                                                                                                <div className="application-detail">
-                                                                                                    <span className="detail-label">Étudiant:</span>{' '}
-                                                                                                    <span className="detail-value">
-                                                                                                        {app.student_email} ({app.student_speciality})
-                                                                                                    </span>
-                                                                                                </div>
-                                                                                                <div className="application-detail">
-                                                                                                    <span className="detail-label">Score:</span>{' '}
-                                                                                                    <span className="detail-value">
-                                                                                                        {app.calculated_score || 'N/A'}
-                                                                                                    </span>
-                                                                                                </div>
-                                                                                                <div className="application-detail">
-                                                                                                    <span className="detail-label">Statut:</span>{' '}
-                                                                                                    <span className={`status-badge status-${app.status}`}>
-                                                                                                        {app.status === 'pending' ? 'En Attente' : app.status === 'accepted' ? 'Accepté' : 'Rejeté'}
-                                                                                                    </span>
-                                                                                                </div>
-                                                                                                <div className="application-detail">
-                                                                                                    <span className="detail-label">Notes:</span>{' '}
-                                                                                                    <span className="detail-value">
-                                                                                                        1re: {app.first_year_mark || 'N/A'}, 
-                                                                                                        2e: {app.second_year_mark || 'N/A'}, 
-                                                                                                        3e: {app.third_year_mark || 'N/A'}
-                                                                                                    </span>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    ))}
-                                                                                </div>
-                                                                            ) : (
-                                                                                <p className="empty-state">
-                                                                                    Aucune candidature pour ce programme de master.
-                                                                                </p>
-                                                                            )}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    ) : (
-                                                        <p className="empty-state">
-                                                            Cette université n’a aucun programme de master.
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </>
+                                            <div className="university-actions">
+                                                <button
+                                                    onClick={() => handleEditUniversity(uni)}
+                                                    className="btn btn-primary btn-sm"
+                                                >
+                                                    Modifier
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteUniversity(uni.id)}
+                                                    className="btn btn-danger btn-sm"
+                                                >
+                                                    Supprimer
+                                                </button>
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
                             ))}
@@ -541,6 +480,181 @@ function SuperAdminDashboard({ user, onLogout }) {
                         <div className="empty-state">Aucun retour disponible.</div>
                     )}
                 </div>
+
+                {/* Masters Modal */}
+                {showMastersModal && selectedUniversity && (
+                    <div className="modal-overlay">
+                        <div className="modal">
+                            <div className="modal-header">
+                                <h3>Programmes de Master - {selectedUniversity.name}</h3>
+                                <button className="close-btn" onClick={() => setShowMastersModal(false)}>
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                {selectedUniversity.masters.length > 0 ? (
+                                    <div className="master-program-list">
+                                        {selectedUniversity.masters.map((master) => (
+                                            <div key={master.id} className="master-program-item">
+                                                <div
+                                                    className="master-program-clickable"
+                                                    onClick={() => handleMasterClick(master)}
+                                                >
+                                                    <h4 className="master-name">{master.name}</h4>
+                                                    <p className="master-description">{master.description}</p>
+                                                    <div className="master-details">
+                                                        <p>Requis: <span className="highlight">{master.required_speciality}</span></p>
+                                                        <p>Étudiants Max: <span className="highlight">{master.max_students}</span></p>
+                                                        <p>Candidatures: <span className="highlight">{master.application_count || 0}</span></p>
+                                                        <p>
+                                                            Période de Candidature:{' '}
+                                                            <span className="highlight">
+                                                                {formatDate(master.application_start_date)} - {formatDate(master.application_end_date)}
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="empty-state">
+                                        Cette université n’a aucun programme de master.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Applications Modal */}
+                {showApplicationsModal && selectedMaster && (
+                    <div className="modal-overlay">
+                        <div className="modal">
+                            <div className="modal-header">
+                                <h3>Candidatures - {selectedMaster.name}</h3>
+                                <button className="close-btn" onClick={() => setShowApplicationsModal(false)}>
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                {selectedMaster.applications.length > 0 ? (
+                                    <div className="applications-container">
+                                        {selectedMaster.applications.map((app) => (
+                                            <div key={app.id} className="application-item">
+                                                <div className="application-grid">
+                                                    <div className="application-detail">
+                                                        <span className="detail-label">Étudiant:</span>{' '}
+                                                        <span className="detail-value">
+                                                            {app.student_email} ({app.student_speciality})
+                                                        </span>
+                                                    </div>
+                                                    <div className="application-detail">
+                                                        <span className="detail-label">Score:</span>{' '}
+                                                        <span className="detail-value">
+                                                            {app.calculated_score || 'N/A'}
+                                                        </span>
+                                                    </div>
+                                                    <div className="application-detail">
+                                                        <span className="detail-label">Statut:</span>{' '}
+                                                        <span className={`status-badge status-${app.status}`}>
+                                                            {app.status === 'pending' ? 'En Attente' : app.status === 'accepted' ? 'Accepté' : 'Rejeté'}
+                                                        </span>
+                                                    </div>
+                                                    <div className="application-detail">
+                                                        <span className="detail-label">Notes:</span>{' '}
+                                                        <span className="detail-value">
+                                                            1re: {app.first_year_mark || 'N/A'}, 
+                                                            2e: {app.second_year_mark || 'N/A'}, 
+                                                            3e: {app.third_year_mark || 'N/A'}
+                                                        </span>
+                                                    </div>
+                                                    {app.transcript_pdf && (
+                                                        <div className="application-detail">
+                                                            <span className="detail-label">Relevé de Notes:</span>{' '}
+                                                            <button
+                                                                className="view-transcript-btn"
+                                                                onClick={() => handleViewTranscript(app.transcript_pdf)}
+                                                            >
+                                                                Voir le Relevé de Notes Académique
+                                                            </button>
+                                                            <a
+                                                                href={`http://localhost:3001/${app.transcript_pdf}`}
+                                                                download
+                                                                className="download-transcript-link"
+                                                            >
+                                                                Télécharger le PDF
+                                                            </a>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="empty-state">
+                                        Aucune candidature pour ce programme de master.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* PDF Viewer Modal */}
+                {showPdfViewer && selectedTranscript && (
+                    <div className="modal-overlay">
+                        <div className="pdf-viewer-modal">
+                            <div className="modal-header">
+                                <h3>Relevé de Notes Académique</h3>
+                                <button className="close-btn" onClick={() => setShowPdfViewer(false)}>
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="pdf-viewer">
+                                    <Document
+                                        file={`http://localhost:3001/${selectedTranscript}`}
+                                        onLoadSuccess={onDocumentLoadSuccess}
+                                        onLoadError={(error) => {
+                                            console.error('Erreur lors du chargement du PDF:', error);
+                                            setMessage('Erreur lors du chargement du PDF. Veuillez essayer de le télécharger.');
+                                        }}
+                                    >
+                                        <Page pageNumber={pageNumber} width={600} />
+                                    </Document>
+                                    {numPages && (
+                                        <div className="pdf-navigation">
+                                            <button
+                                                disabled={pageNumber <= 1}
+                                                onClick={() => setPageNumber(pageNumber - 1)}
+                                                className="pdf-nav-btn"
+                                            >
+                                                Précédent
+                                            </button>
+                                            <span>
+                                                Page {pageNumber} de {numPages}
+                                            </span>
+                                            <button
+                                                disabled={pageNumber >= numPages}
+                                                onClick={() => setPageNumber(pageNumber + 1)}
+                                                className="pdf-nav-btn"
+                                            >
+                                                Suivant
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </main>
         </div>
     );

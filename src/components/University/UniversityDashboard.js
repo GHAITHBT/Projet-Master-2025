@@ -191,7 +191,7 @@ function CombinedDashboard({ user, onLogout }) {
       <header className="dashboard-header">
         <div className="header-container">
           <div>
-            <h1 className="dashboard-title">Système de Gestion Universitaire</h1>
+            <h1 className="dashboard-title">Université de Jendouba</h1>
             <p className="dashboard-subtitle">Portail d'Administration</p>
           </div>
           <div className="user-info">

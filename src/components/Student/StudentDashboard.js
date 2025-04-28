@@ -107,11 +107,35 @@ function StudentDashboard({ user, onLogout }) {
     }
   };
 
+  // Helper function to check if marks and transcript are filled
+  const canApply = () => {
+    // Check if marks are filled and are valid numbers
+    const marksFilled = 
+      firstYearMark !== '' && 
+      secondYearMark !== '' && 
+      thirdYearMark !== '' && 
+      !isNaN(parseFloat(firstYearMark)) && 
+      !isNaN(parseFloat(secondYearMark)) && 
+      !isNaN(parseFloat(thirdYearMark));
+    
+    // Check if transcript is uploaded
+    const transcriptUploaded = studentData?.transcript_pdf && studentData.transcript_pdf !== '';
+
+    return marksFilled && transcriptUploaded;
+  };
+
   const handleApply = async (masterId) => {
     if (!studentData || !studentData.id) {
       showToast('Impossible de postuler. Données de l’étudiant non chargées.', 'error');
       return;
     }
+
+    // Check if the student can apply
+    if (!canApply()) {
+      showToast('Veuillez remplir toutes vos notes et télécharger votre relevé de notes avant de postuler.', 'error');
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:3001/api/apply', {
         studentId: studentData.id,
@@ -236,7 +260,7 @@ function StudentDashboard({ user, onLogout }) {
       <nav className="top-nav">
         <div className="logo">
           <Book size={24} />
-          <span>EduMasters</span>
+          <span>Université de Jendouba</span>
         </div>
         
         <div className="nav-actions">
@@ -455,11 +479,21 @@ function StudentDashboard({ user, onLogout }) {
               <h3>Programmes de Master Disponibles</h3>
               <p className="speciality-note">Affichage des programmes pour {studentData?.speciality || 'votre spécialité'}</p>
               
+              {/* Add a visible message if the user cannot apply */}
+              {!canApply() && (
+                <div className="apply-restriction-message">
+                  <p>
+                    Vous devez remplir toutes vos notes et télécharger votre relevé de notes pour pouvoir postuler à un programme de master.
+                  </p>
+                </div>
+              )}
+              
               {masters.length > 0 ? (
                 <div className="masters-list">
                   {masters.map((master, index) => {
                     const applicationStatus = getApplicationStatus(master.application_start_date, master.application_end_date);
                     const applied = hasApplied(master.id);
+                    const isApplyDisabled = !canApply();
                     return (
                       <motion.div 
                         key={master.id}
@@ -492,12 +526,21 @@ function StudentDashboard({ user, onLogout }) {
                         {applied ? (
                           <span className="applied-status">Candidature Envoyée</span>
                         ) : applicationStatus.status === 'active' ? (
-                          <button
-                            onClick={() => handleApply(master.id)}
-                            className="apply-btn"
-                          >
-                            Postuler
-                          </button>
+                          <div className="apply-btn-container">
+                            <button
+                              onClick={() => handleApply(master.id)}
+                              className="apply-btn"
+                              disabled={isApplyDisabled}
+                              title={isApplyDisabled ? "Veuillez remplir toutes vos notes et télécharger votre relevé de notes avant de postuler." : ""}
+                            >
+                              Postuler
+                            </button>
+                            {isApplyDisabled && (
+                              <span className="apply-tooltip">
+                                Veuillez remplir toutes vos notes et télécharger votre relevé de notes.
+                              </span>
+                            )}
+                          </div>
                         ) : (
                           <span className="closed-status">
                             {applicationStatus.status === 'pending' ? 'Pas Encore Ouvert' : 'Fermé'}
