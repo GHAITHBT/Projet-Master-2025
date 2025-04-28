@@ -106,7 +106,7 @@ function SuperAdminDashboard({ user, onLogout }) {
             });
 
             if (!response.ok) {
-                throw new Error('Échec de la récupération des retours');
+                throw new Error('Échec de la récupération des Feedback');
             }
 
             const data = await response.json();
@@ -451,7 +451,7 @@ function SuperAdminDashboard({ user, onLogout }) {
                     )}
                 </div>
                 <div className="card feedback-card">
-                    <h3 className="card-title">Retour des Utilisateurs</h3>
+                    <h3 className="card-title">Feedback</h3>
                     {feedbackLoading ? (
                         <div className="loading-container">
                             <div className="spinner"></div>
@@ -477,7 +477,7 @@ function SuperAdminDashboard({ user, onLogout }) {
                             ))}
                         </div>
                     ) : (
-                        <div className="empty-state">Aucun retour disponible.</div>
+                        <div className="empty-state">Aucun feedback disponible.</div>
                     )}
                 </div>
 

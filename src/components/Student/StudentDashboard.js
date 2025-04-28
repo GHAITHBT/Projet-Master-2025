@@ -269,7 +269,7 @@ function StudentDashboard({ user, onLogout }) {
             onClick={() => setShowFeedback(true)}
           >
             <MessageSquare size={18} />
-            <span>Retour</span>
+            <span>Feedback</span>
           </button>
           
           <div className="user-profile" onClick={() => setShowUserInfo(!showUserInfo)}>
